@@ -4,7 +4,7 @@ project(raspi_hardware_control)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_PREFIX_PATH "/usr/local/lib/cmake" "/usr/local" ${CMAKE_PREFIX_PATH})
 message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 
 # Include directories
 include_directories(include)
@@ -13,6 +13,7 @@ include_directories(include)
 find_package(raspicam REQUIRED)
 find_library(WIRINGPI_LIB wiringPi)
 find_package(pybind11 REQUIRED)
+find_package(Python 3 REQUIRED)
 
 if (NOT raspicam_FOUND)
     message(FATAL_ERROR "raspicam not found!")
@@ -22,6 +23,9 @@ if (NOT WIRINGPI_LIB)
 endif()
 if (NOT pybind11_FOUND)
     message(FATAL_ERROR "pybind11 not found!")
+endif()
+if (NOT Python_FOUND)
+    message(FATAL_ERROR "Python not found!")
 endif()
 
 # Create executable for standalone c++
@@ -59,4 +63,14 @@ target_link_libraries(py_raspi_hw_ctrl
         ${raspicam_LIBS}
         ${WIRINGPI_LIB}
         pybind11::module
+)
+
+# Install the C++ executable
+install(TARGETS cpp_raspi_hw_ctrl
+    DESTINATION bin
+)
+
+# Install the Python module
+install(TARGETS py_raspi_hw_ctrl
+    DESTINATION lib/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}/dist-packages
 )
