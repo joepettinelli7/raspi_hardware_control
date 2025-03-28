@@ -50,7 +50,7 @@ Image CameraController::capture_image() {
     const unsigned int size = camera.getImageBufferSize();
     const auto data = new unsigned char[size];
     camera.grab_retrieve(data, size);
-    Image image(data, size, config.image_width, config.image_height, get_image_encoding(), true);
+    Image image(data, size, config.image_width, config.image_height, config.encoding, true);
     delete[] data;
     return image;
 }
